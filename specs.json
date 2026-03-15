@@ -1,0 +1,7 @@
+{
+  "author": "Joaquin Franco",
+  "name": "jiff",
+  "description": "Jiff: Find JSON diffs quickly and easily.",
+  "version": "0.0.1",
+  "repository": "https://github.com/jgfranco17/jiff-cli"
+}
