@@ -3,8 +3,10 @@ package commandline
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/jgfranco17/dev-tooling-go/logging"
@@ -14,6 +16,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CLI represents the command-line interface instance of the application.
+// Allows for configuration of global flags and holds the root command.
 type CLI struct {
 	rootCmd *cobra.Command
 
@@ -21,7 +25,7 @@ type CLI struct {
 	failOnDiff bool
 }
 
-// NewCommand creates a new instance of Command
+// NewCommand creates a new instance of Command.
 func New(name string, description string, version string) *CLI {
 	var verbosity int
 	var failOnDiff bool
@@ -38,7 +42,7 @@ func New(name string, description string, version string) *CLI {
 			logger := logging.FromContext(cmd.Context())
 
 			sourceFile, targetFile := args[0], args[1]
-			sourceData, err := os.Open(sourceFile)
+			sourceData, err := loadJsonFile(sourceFile)
 			if err != nil {
 				return errorhandling.ExitError{
 					Err:      fmt.Errorf("failed to read source file: %w", err),
@@ -46,7 +50,7 @@ func New(name string, description string, version string) *CLI {
 					Solution: "Please ensure the source file exists and is accessible.",
 				}
 			}
-			targetData, err := os.Open(targetFile)
+			targetData, err := loadJsonFile(targetFile)
 			if err != nil {
 				return errorhandling.ExitError{
 					Err:      fmt.Errorf("failed to read target file: %w", err),
@@ -100,10 +104,6 @@ func New(name string, description string, version string) *CLI {
 	}
 }
 
-func (cr *CLI) GetMain() *cobra.Command {
-	return cr.rootCmd
-}
-
 // Execute executes the root command
 func (cr *CLI) Execute() error {
 	return cr.rootCmd.Execute()
@@ -144,5 +144,17 @@ func preRunFunc(ctx context.Context) cobraRunFunc {
 		cmd.SetContext(ctx)
 		return nil
 	}
+
+}
+
+func loadJsonFile(filePathInput string) (io.Reader, error) {
+	if filepath.Ext(filePathInput) != ".json" {
+		return nil, fmt.Errorf("invalid file type: %s", filePathInput)
+	}
+	data, err := os.Open(filePathInput)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+	return data, nil
 
 }
