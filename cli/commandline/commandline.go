@@ -36,12 +36,8 @@ func New(name string, description string, version string) *CLI {
 		PersistentPreRunE: preRunFunc(ctx),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logger := logging.FromContext(cmd.Context())
-			sourceFile, targetFile := args[0], args[1]
-			logger.WithFields(logrus.Fields{
-				"source": sourceFile,
-				"target": targetFile,
-			}).Debug("Comparing files")
 
+			sourceFile, targetFile := args[0], args[1]
 			sourceData, err := os.Open(sourceFile)
 			if err != nil {
 				return errorhandling.ExitError{
@@ -58,6 +54,10 @@ func New(name string, description string, version string) *CLI {
 					Solution: "Please ensure the target file exists and is accessible.",
 				}
 			}
+			logger.WithFields(logrus.Fields{
+				"source": sourceFile,
+				"target": targetFile,
+			}).Debug("Comparing files")
 
 			diffs, err := diffs.CompareJSON(sourceData, targetData)
 			if err != nil {
@@ -68,6 +68,12 @@ func New(name string, description string, version string) *CLI {
 			}
 
 			if !diffs.IsEmpty() {
+				logger.WithFields(logrus.Fields{
+					"added":   len(diffs.Added),
+					"removed": len(diffs.Removed),
+					"changed": len(diffs.Changed),
+				}).Info("Differences found")
+
 				diffs.Render(cmd.OutOrStdout())
 				if failOnDiff {
 					return errorhandling.ExitError{
