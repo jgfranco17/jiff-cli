@@ -30,13 +30,11 @@ func (e ExitError) Unwrap() error {
 	return e.Err
 }
 
-func (e ExitError) Render() string {
+func (e ExitError) String() string {
 	message := fmt.Sprintf("[ERROR] %s", e.Err.Error())
-
 	if e.Solution != "" {
 		message += fmt.Sprintf("\n[SOLUTION]: %s", e.Solution)
 	}
-
 	message += fmt.Sprintf("Jiff exited with code %d\n", e.ExitCode)
 	return message
 }

@@ -33,7 +33,7 @@ func main() {
 func handleError(err error) int {
 	var exitErr *errorhandling.ExitError
 	if errors.As(err, &exitErr) {
-		logrus.Error(exitErr.Render())
+		logrus.Error(exitErr.String())
 		return exitErr.ExitCode
 	} else {
 		logrus.Error(err.Error())

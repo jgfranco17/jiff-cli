@@ -38,7 +38,7 @@ func TestWithSolution(t *testing.T) {
 
 			assert.Equal(t, tc.solution, e.Solution)
 
-			rendered := e.Render()
+			rendered := e.String()
 			if tc.wantInRender != "" {
 				assert.Contains(t, rendered, tc.wantInRender)
 			}
@@ -79,7 +79,7 @@ func TestExitError_Render(t *testing.T) {
 				ExitCode: tc.code,
 			}
 			e := base.WithSolution(tc.solution)
-			rendered := e.Render()
+			rendered := e.String()
 			for _, fragment := range tc.wantFragments {
 				assert.True(t, strings.Contains(rendered, fragment),
 					"expected Render() to contain %q, got:\n%s", fragment, rendered)
