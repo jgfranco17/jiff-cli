@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/jgfranco17/jiff-cli/cli/commandline"
+	"github.com/jgfranco17/jiff-cli/cli/metadata"
 	"github.com/jgfranco17/jiff-cli/internal/errorhandling"
 
 	_ "embed" // Required for the //go:embed directive
@@ -18,7 +19,7 @@ var embeddedMetadata []byte
 
 func main() {
 	embeddedMetadataReader := bytes.NewReader(embeddedMetadata)
-	metadata, err := commandline.LoadMetadata(embeddedMetadataReader)
+	metadata, err := metadata.Load(embeddedMetadataReader)
 	if err != nil {
 		os.Exit(handleError(err))
 	}
