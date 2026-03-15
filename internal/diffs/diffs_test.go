@@ -1,10 +1,9 @@
-package diffs_test
+package diffs
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/jgfranco17/jiff-cli/internal/diffs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -91,7 +90,7 @@ func TestCompareJSON(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := diffs.CompareJSON(
+			result, err := CompareJSON(
 				strings.NewReader(tc.source),
 				strings.NewReader(tc.target),
 			)
@@ -112,32 +111,32 @@ func TestCompareJSON(t *testing.T) {
 func TestComparisonResult_IsEmpty(t *testing.T) {
 	tests := []struct {
 		name   string
-		result diffs.ComparisonResult
+		result ComparisonResult
 		want   bool
 	}{
 		{
 			name:   "zero value is empty",
-			result: diffs.ComparisonResult{},
+			result: ComparisonResult{},
 			want:   true,
 		},
 		{
 			name:   "only Added populated is not empty",
-			result: diffs.ComparisonResult{Added: []string{"x"}},
+			result: ComparisonResult{Added: []string{"x"}},
 			want:   false,
 		},
 		{
 			name:   "only Removed populated is not empty",
-			result: diffs.ComparisonResult{Removed: []string{"x"}},
+			result: ComparisonResult{Removed: []string{"x"}},
 			want:   false,
 		},
 		{
 			name:   "only Changed populated is not empty",
-			result: diffs.ComparisonResult{Changed: []string{"x"}},
+			result: ComparisonResult{Changed: []string{"x"}},
 			want:   false,
 		},
 		{
 			name: "all fields populated is not empty",
-			result: diffs.ComparisonResult{
+			result: ComparisonResult{
 				Added:   []string{"a"},
 				Removed: []string{"b"},
 				Changed: []string{"c"},
@@ -156,32 +155,32 @@ func TestComparisonResult_IsEmpty(t *testing.T) {
 func TestComparisonResult_Total(t *testing.T) {
 	tests := []struct {
 		name   string
-		result diffs.ComparisonResult
+		result ComparisonResult
 		want   int
 	}{
 		{
 			name:   "zero value totals zero",
-			result: diffs.ComparisonResult{},
+			result: ComparisonResult{},
 			want:   0,
 		},
 		{
 			name:   "only Added counts correctly",
-			result: diffs.ComparisonResult{Added: []string{"a", "b"}},
+			result: ComparisonResult{Added: []string{"a", "b"}},
 			want:   2,
 		},
 		{
 			name:   "only Removed counts correctly",
-			result: diffs.ComparisonResult{Removed: []string{"a"}},
+			result: ComparisonResult{Removed: []string{"a"}},
 			want:   1,
 		},
 		{
 			name:   "only Changed counts correctly",
-			result: diffs.ComparisonResult{Changed: []string{"a", "b", "c"}},
+			result: ComparisonResult{Changed: []string{"a", "b", "c"}},
 			want:   3,
 		},
 		{
 			name: "all fields summed correctly",
-			result: diffs.ComparisonResult{
+			result: ComparisonResult{
 				Added:   []string{"a", "b"},
 				Removed: []string{"c"},
 				Changed: []string{"d", "e"},

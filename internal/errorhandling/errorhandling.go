@@ -17,13 +17,6 @@ type ExitError struct {
 	Solution string
 }
 
-func New(err error, code int) *ExitError {
-	return &ExitError{
-		Err:      err,
-		ExitCode: code,
-	}
-}
-
 func (e *ExitError) WithSolution(solution string) *ExitError {
 	e.Solution = solution
 	return e

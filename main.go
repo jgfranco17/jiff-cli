@@ -7,7 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	commandline "github.com/jgfranco17/jiff-cli/cli/core"
+	"github.com/jgfranco17/jiff-cli/cli/commandline"
 	"github.com/jgfranco17/jiff-cli/internal/errorhandling"
 
 	_ "embed" // Required for the //go:embed directive

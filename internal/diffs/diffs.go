@@ -8,20 +8,24 @@ import (
 	"github.com/fatih/color"
 )
 
+// ComparisonResult represents the differences between two JSON objects.
 type ComparisonResult struct {
 	Added   []string
 	Removed []string
 	Changed []string
 }
 
+// IsEmpty returns true if there are no differences in the comparison result.
 func (r ComparisonResult) IsEmpty() bool {
 	return len(r.Added) == 0 && len(r.Removed) == 0 && len(r.Changed) == 0
 }
 
+// Total returns the total number of differences in the comparison result.
 func (r ComparisonResult) Total() int {
 	return len(r.Added) + len(r.Removed) + len(r.Changed)
 }
 
+// Render outputs the differences in a colored human-readable format to the provided writer.
 func (r ComparisonResult) Render(w io.Writer) {
 	fmt.Fprintf(w, "%d differences found:\n", r.Total())
 	redSprintf := color.New(color.FgRed).SprintfFunc()
@@ -35,8 +39,7 @@ func (r ComparisonResult) Render(w io.Writer) {
 
 // CompareJSON returns a ComparisonResult containing human-readable difference
 // strings between two JSON objects. Keys present only in source are reported as
-// removed, keys present only in target as added, and mismatched values as
-// changed.
+// removed, keys present only in target as added, and mismatched values as changed.
 func CompareJSON(source, target io.Reader) (ComparisonResult, error) {
 	var sourceJSON, targetJSON map[string]any
 	if err := json.NewDecoder(source).Decode(&sourceJSON); err != nil {
