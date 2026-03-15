@@ -3,7 +3,6 @@ package errorhandling
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -81,8 +80,7 @@ func TestExitError_Render(t *testing.T) {
 			e := base.WithSolution(tc.solution)
 			rendered := e.String()
 			for _, fragment := range tc.wantFragments {
-				assert.True(t, strings.Contains(rendered, fragment),
-					"expected Render() to contain %q, got:\n%s", fragment, rendered)
+				assert.Contains(t, rendered, fragment)
 			}
 		})
 	}

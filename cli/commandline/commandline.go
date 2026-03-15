@@ -35,7 +35,7 @@ func New(name string, description string, version string) *CLI {
 		Use:               name,
 		Version:           version,
 		Short:             description,
-		Example:           "jiff file1.json file2.json",
+		Example:           fmt.Sprintf("%s file1.json file2.json", name),
 		Args:              cobra.ExactArgs(2),
 		PersistentPreRunE: preRunFunc(ctx),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -104,9 +104,19 @@ func New(name string, description string, version string) *CLI {
 	}
 }
 
-// Execute executes the root command
-func (cr *CLI) Execute() error {
-	return cr.rootCmd.Execute()
+// Execute executes the root command.
+func (cr *CLI) Execute() (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = errorhandling.ExitError{
+				Err:      fmt.Errorf("unexpected internal error: %v", r),
+				ExitCode: errorhandling.ExitCodeCrashError,
+				Solution: "Please report this issue to the developers with steps to reproduce.",
+			}
+		}
+	}()
+	err = cr.rootCmd.Execute()
+	return err
 }
 
 type cobraRunFunc func(cmd *cobra.Command, args []string) error

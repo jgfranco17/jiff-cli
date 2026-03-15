@@ -9,6 +9,7 @@ const (
 	ExitCodeConfigurationError int = 2
 	ExitCodeOperationFailed    int = 3
 	ExitCodeInvalidInput       int = 4
+	ExitCodeCrashError         int = 5
 )
 
 type ExitError struct {
